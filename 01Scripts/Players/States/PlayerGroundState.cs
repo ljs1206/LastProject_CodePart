@@ -1,7 +1,6 @@
 using LJS.Animators;
 using LJS.Entities;
 using LJS.FSM;
-using UnityEngine;
 
 namespace LJS.Players
 {
@@ -20,11 +19,14 @@ namespace LJS.Players
         {
             base.Enter();
             _player.PlayerInput.JumpEvent += HandleJump;
+            _player.PlayerInput.AttackEvent += HandleAttack;
         }
+
 
         public override void Exit()
         {
             _player.PlayerInput.JumpEvent -= HandleJump;
+            _player.PlayerInput.AttackEvent -= HandleAttack;
             base.Exit();
         }
 
@@ -37,6 +39,11 @@ namespace LJS.Players
             // }
         }
 
+        private void HandleAttack()
+        {
+            _player.ChangeState("ATTACK");
+        }
+        
         private void HandleJump()
         {
             _player.ChangeState("JUMP");

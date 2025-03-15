@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using DG.Tweening;
 using LJS.Core.StatSystem;
 using UnityEngine;
@@ -7,6 +8,11 @@ namespace LJS.Entities
 {
     public class EntityMover : MonoBehaviour, IEntityComponent, IAfterInitable
     {
+        public enum AddForceType
+        {
+            MoveTransfom, UseRigid
+        }
+        
         public event Action<Vector2> OnMovement;
 
         [Header("Collision detect")] 
@@ -27,8 +33,11 @@ namespace LJS.Entities
         private float _moveSpeedMultiplier, _originalGravity;
 
         [field: SerializeField] public bool CanManualMove { get; set; } = true;
+        [field: SerializeField] public float SpeedReduction { get; private set; }
+        public bool JumpNow { get; private set; } = false;
         
         private Entity _entity;
+        private Tween _moveYTween;
         
         public void Initialize(Entity entity)
         {
@@ -61,7 +70,9 @@ namespace LJS.Entities
         private void FixedUpdate()
         {
             if(CanManualMove)
-                _rbCompo.linearVelocity = _movement * _moveSpeed * _moveSpeedMultiplier;
+                _rbCompo.linearVelocity = !JumpNow ? 
+                    _movement * _moveSpeed * _moveSpeedMultiplier : 
+                    _movement / SpeedReduction * _moveSpeed * _moveSpeedMultiplier;
             
             OnMovement?.Invoke(_rbCompo.linearVelocity);
         }
@@ -85,19 +96,78 @@ namespace LJS.Entities
         public void SetMovementMultiplier(float value) => _moveSpeedMultiplier = value;
         public void SetGravityMultiplier(float value) => _rbCompo.gravityScale = value;
 
-        public void AddForceToEntity(Vector2 force, ForceMode2D mode = ForceMode2D.Impulse)
+        public void AddForceToEntity(Vector2 force, AddForceType forceType, 
+            ForceMode2D mode = ForceMode2D.Impulse, Action endEvent = null)
         {
-            _rbCompo.AddForce(force, mode);
+            if(forceType == AddForceType.MoveTransfom)
+                AddForceCoro(force, mode, _entity.transform, endEvent);
+            else 
+                _rbCompo.AddForce(force, mode);
+        }
+        
+        public void AddForceToVisual(Vector2 force, AddForceType forceType,
+            ForceMode2D mode = ForceMode2D.Impulse, Action endEvent = null
+            )
+        {
+            if (forceType == AddForceType.MoveTransfom)
+                StartCoroutine(AddForceCoro(force, mode, 
+                    _entity.VisualTrm, endEvent));
+            else
+                _rbCompo.AddForce(force, mode);
         }
 
+        private IEnumerator AddForceCoro(Vector2 force, ForceMode2D mode, 
+            Transform target = null, Action endEvent = null)
+        {
+            Vector2 origiPos = transform.position;
+            float currentTime = 0;
+            while (currentTime < 1)
+            {
+                currentTime += Time.deltaTime;
+                transform.position = Vector3.Lerp(origiPos, origiPos + force, currentTime);
+                yield return null;
+            }
+        }
 
+        public void Jump(Vector2 force,  Ease jumpEase = Ease.Linear, Ease fallEase = Ease.Linear, 
+            Action jumpEndEvent = null, Action endEvent = null)
+        {
+            JumpNow = true;
+            Vector2 originPos = _entity.transform.position;
+            Transform target = _entity.VisualTrm;
+            _moveYTween.Kill();
+            
+            _moveYTween = target.DOMoveY((originPos + force).y,
+                    1).SetEase(jumpEase)
+                .OnComplete(() =>
+                {
+                    jumpEndEvent?.Invoke();
+                    ReturnPos(-force, fallEase, endEvent);
+                });
+        }
+
+        private void ReturnPos(Vector2 force, Ease ease = Ease.Linear, Action endEvent = null)
+        {
+            Transform target = _entity.VisualTrm;
+            Vector2 originPos = target.transform.position;
+            _moveYTween.Kill();
+            
+            _moveYTween = target.DOMoveY((originPos + force).y,
+                    1).SetEase(ease)
+                .OnComplete(() =>
+                {
+                    endEvent?.Invoke();
+                    JumpNow = false;
+                });
+        }
+        
         #region KnockBack
 
-        public void KnockBack(Vector2 force, float time)
+        public void KnockBack(Vector2 force, float time, AddForceType forceType)
         {
             CanManualMove = false;
             StopImmediately(true);
-            AddForceToEntity(force);
+            AddForceToEntity(force, forceType);
             DOVirtual.DelayedCall(time, () => CanManualMove = true);
         }
         
@@ -105,9 +175,9 @@ namespace LJS.Entities
         
         #region  CheckCollision
         
-        // public virtual bool IsGroundDetected()
-        //     => Physics2D.BoxCast(_groundCheckTrm.position, 
-        //         _checkerSize, 0, Vector2.down, _checkDistance, _whatIsGround);
+        public virtual bool IsGroundDetected()
+            => Physics2D.BoxCast(_groundCheckTrm.position, 
+                _checkerSize, 0, Vector2.down, _checkDistance, _whatIsGround);
         
         #endregion
         

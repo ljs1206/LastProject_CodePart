@@ -8,10 +8,12 @@ namespace LJS.Entities
     public abstract class Entity : MonoBehaviour
     {
         protected Dictionary<Type, IEntityComponent> _components;
+        public Transform VisualTrm { get; private set; }
 
         protected virtual void Awake()
         {
             _components = new Dictionary<Type, IEntityComponent>();
+            VisualTrm = transform.Find("Visual");
             AddComponentToDictionary();
             ComponentInitialize();
             AfterInitialize();

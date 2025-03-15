@@ -14,6 +14,7 @@ namespace LJS.Players
         public override void Update()
         {
             base.Update();
+            
             float xInput = _player.PlayerInput.InputDirection.x;
             float yInput = _player.PlayerInput.InputDirection.y;
             _mover.SetMovement(new Vector2(xInput, yInput));

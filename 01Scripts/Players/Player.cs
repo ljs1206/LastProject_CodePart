@@ -11,6 +11,9 @@ namespace LJS.Players
     {
         [field:SerializeField] public PlayerInputSO PlayerInput { get; private set; }
         
+        [Header("Stats")]
+        public StatSO JumpPowerStat;
+        
         public List<StateSO> states;
 
         private StateMachine _stateMachine;
@@ -42,6 +45,12 @@ namespace LJS.Players
         {
             _stateMachine.ChangeState(newStateName);
         }
-         
+
+        public void PlayBladeEffect()
+        {
+            GetCompo<PlayerEffect>().
+                PlayBladeEffect(GetCompo<PlayerAttack>().CurrentComboCount);
+        }
+        
     }
 }

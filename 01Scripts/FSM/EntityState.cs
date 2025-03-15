@@ -18,7 +18,7 @@ namespace LJS.FSM
             _entity = entity;
             _stateAnimParam = stateAnimParam;
             _renderer = entity.GetCompo<EntityRenderer>();
-            _animTrigger = entity.GetCompo<EntityAnimatorTrigger>();
+            _animTrigger = entity.GetCompo<EntityAnimatorTrigger>(true);
         }
 
         public virtual void Enter()

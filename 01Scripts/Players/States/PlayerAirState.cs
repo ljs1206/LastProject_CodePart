@@ -31,9 +31,9 @@ namespace LJS.Players
         public override void Update()
         {
             base.Update();
-            // float xInput = _player.PlayerInput.InputDirection.x;
-            // if(Mathf.Abs(xInput) > 0)
-            //     _mover.SetMovement(xInput);
+            float xInput = 
+                _player.PlayerInput.InputDirection.x;
+            _mover.SetMovement(new Vector2(xInput, 0));
         }
     }
 }
