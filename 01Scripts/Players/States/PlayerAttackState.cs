@@ -42,8 +42,7 @@ namespace LJS.Players
 
         public override void AnimationEndTrigger()
         {
-            base.AnimationEndTrigger();
-            Debug.Log(_attackCompo.CurrentComboCount);
+            base.AnimationEndTrigger(); 
             if (_attackCompo.CurrentComboCount + 1 >= _attackCompo.MaxComboCount)
             {
                 _attackCompo.CurrentComboCount = 0;

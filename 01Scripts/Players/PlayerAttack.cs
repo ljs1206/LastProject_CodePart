@@ -44,7 +44,7 @@ namespace LJS.Players
         {
             _player = entity as Player;
 
-            _entityAnimatorTrigger = _player.GetCompo<EntityAnimatorTrigger>();
+            _entityAnimatorTrigger = _player.GetCompo<EntityAnimatorTrigger>(true);
             _caster = transform.Find("DamageCaster").GetComponent<DamageCaster>();
         }
 
