@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using LJS.Animators;
 using LJS.Entities;
 using LJS.Players;
 using UnityEngine;
@@ -26,12 +25,18 @@ namespace LJS
         {
             IPoolable poolable  = _poolManager.Pop(_slashEffectList[comboIndex]);
             poolable.GameObject.transform.position = _slashTrmList[comboIndex].trm.position;
+
+            float effectRotZ = _slashTrmList[comboIndex].rot.z;
+            if (Mathf.Approximately(_player.
+                    GetCompo<EntityRenderer>().FacingDirection, -1))
+            {
+                effectRotZ -= 180;
+            }
+            
             poolable.GameObject.transform.rotation = 
                 Quaternion.Euler(new Vector3(_slashTrmList[comboIndex].rot.x,
                     _slashTrmList[comboIndex].rot.y, 
-                    _slashTrmList[comboIndex].rot.z * 
-                    _player.GetCompo<EntityRenderer>().FacingDirection));
-            Debug.Log(_slashTrmList[comboIndex].rot.z * _player.GetCompo<EntityRenderer>().FacingDirection);
+                    effectRotZ));
             poolable.GameObject.GetComponent<ParticleSystem>().Play();
         }
         

@@ -12,6 +12,7 @@ namespace LJS.Players
         public event Action OpenMenuEvent;
         public event Action<Vector2> UINavigationEvent;
         
+        
         public Vector2 InputDirection {get; private set;}
         
         private Controls _controls;

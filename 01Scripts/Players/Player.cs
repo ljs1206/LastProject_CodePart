@@ -10,6 +10,7 @@ namespace LJS.Players
     public class Player : Entity
     {
         [field:SerializeField] public PlayerInputSO PlayerInput { get; private set; }
+        [field:SerializeField] public PoolManagerSO PoolManager { get; private set; }
         
         [Header("Stats")]
         public StatSO JumpPowerStat;

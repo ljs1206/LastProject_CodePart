@@ -1,0 +1,4 @@
+{
+	"name": "LJS.Enemy",
+	"references":[ "GUID:a4862d9c3ed700c4fbc6db9bb1bbfb50", "GUID:cf794ad5f193a9a40a396a460db8554f" ]
+}

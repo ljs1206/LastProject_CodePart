@@ -1,10 +1,13 @@
 {
-    "name": "LJS",
+    "name": "LJS.Player",
     "rootNamespace": "",
     "references": [
-        "GUID:75469ad4d38634e559750d17036d5f7c",
-        "GUID:5228abf8a78a8a142b7eb25679fb5a3b",
-        "GUID:cf794ad5f193a9a40a396a460db8554f"
+        "Unity.InputSystem",
+        "LJS.Entities",
+        "Main.Pool",
+        "LJS.Core",
+        "LJS.FSM",
+        "LJS.Animator"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -9,6 +9,7 @@ namespace LJS.Entities
     {
         protected Dictionary<Type, IEntityComponent> _components;
         public Transform VisualTrm { get; private set; }
+        public bool IsDead { get; set; }
 
         protected virtual void Awake()
         {

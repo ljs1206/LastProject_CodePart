@@ -1,10 +1,10 @@
 {
-    "name": "LJS",
+    "name": "LJS.Entities",
     "rootNamespace": "",
     "references": [
-        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:a4862d9c3ed700c4fbc6db9bb1bbfb50",
         "GUID:5228abf8a78a8a142b7eb25679fb5a3b",
-        "GUID:cf794ad5f193a9a40a396a460db8554f"
+        "GUID:a4eaf6c006e79d049a9ce36e45e2229f"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
